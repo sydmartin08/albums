@@ -1,7 +1,26 @@
 ---
-title: "Albums"
+title: "Taylor Swift Albums"
 ---
 
-This is a Quarto website.
+```{ojs}
+//| echo: false
+viewof album = Inputs.select(new Map([
+  ["1989", "data/swift/1989.jpg"],
+  ["1989 (Taylor's Version)", "data/swift/1989_taylors_version.jpg"],
+  ["Evermore", "data/swift/evermore.jpg"],
+  ["Fearless", "data/swift/fearless.jpg"],
+  ["Fearless (Taylor's Version)", "data/swift/fearless_taylors_version.jpg"],
+  ["Folklore", "data/swift/folklore.jpg"],
+  ["Lover", "data/swift/lover.jpg"],
+  ["Midnights", "data/swift/midnights.jpg"],
+  ["Red", "data/swift/red.jpg"],
+  ["Red (Taylor's Version)", "data/swift/red_taylors_version.jpg"],
+  ["Reputation", "data/swift/reputation.jpg"],
+  ["Speak Now", "data/swift/speak_now.jpg"],
+  ["Speak Now (Taylor's Version)", "data/swift/speak_now_taylors_version.jpg"],
+  ["Taylor Swift", "data/swift/taylor_swift.jpg"],
+  ["The Tortured Poets Department", "data/swift/the_tortured_poets_department.jpg"]
+]), {label: "Select an album:"})
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+html`<div style="margin-top: 20px;"><img src="${album}" style="max-width: 400px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></div>`
+```
