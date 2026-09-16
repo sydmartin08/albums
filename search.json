@@ -7,10 +7,17 @@
     "text": "About this site"
   },
   {
+    "objectID": "colors.html",
+    "href": "colors.html",
+    "title": "Album Colors",
+    "section": "",
+    "text": "This page calculates the average Red, Green, and Blue (RGB) color values for each Taylor Swift album cover.\n\nlibrary(tidyverse)\nlibrary(jpeg)\n\n# Helper function to get average R, G, and B values (0 to 1)\nget_avg_rgb &lt;- \\(file) {\n  img &lt;- readJPEG(file)\n  if (length(dim(img)) == 2) {\n    val &lt;- mean(img)\n    tibble(r = val, g = val, b = val)\n  } else {\n    means &lt;- apply(img, 3, mean)\n    tibble(r = means[1], g = means[2], b = means[3])\n  }\n}\n\n# Read images and compute average colors\nalbum_colors &lt;- tibble(file = list.files(\"data/swift\", full.names = TRUE, pattern = \"\\\\.jpg$\")) |&gt;\n  mutate(\n    album = tools::file_path_sans_ext(basename(file)),\n    avg = map(file, get_avg_rgb)\n  ) |&gt;\n  unnest(avg) |&gt;\n  select(album, r, g, b)\n\nalbum_colors\n\n# A tibble: 15 × 4\n   album                             r     g     b\n   &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1 1989_taylors_version          0.624 0.629 0.634\n 2 1989                          0.789 0.743 0.678\n 3 evermore                      0.500 0.449 0.423\n 4 fearless_taylors_version      0.591 0.470 0.300\n 5 fearless                      0.824 0.740 0.611\n 6 folklore                      0.660 0.660 0.660\n 7 lover                         0.839 0.742 0.806\n 8 midnights                     0.641 0.556 0.557\n 9 red_taylors_version           0.442 0.321 0.254\n10 red                           0.396 0.327 0.336\n11 reputation                    0.657 0.657 0.657\n12 speak_now_taylors_version     0.316 0.187 0.218\n13 speak_now                     0.749 0.589 0.670\n14 taylor_swift                  0.532 0.505 0.414\n15 the_tortured_poets_department 0.794 0.781 0.757"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Albums",
+    "title": "Taylor Swift Albums",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "viewof album = Inputs.select(new Map([\n  [\"1989\", \"data/swift/1989.jpg\"],\n  [\"1989 (Taylor's Version)\", \"data/swift/1989_taylors_version.jpg\"],\n  [\"Evermore\", \"data/swift/evermore.jpg\"],\n  [\"Fearless\", \"data/swift/fearless.jpg\"],\n  [\"Fearless (Taylor's Version)\", \"data/swift/fearless_taylors_version.jpg\"],\n  [\"Folklore\", \"data/swift/folklore.jpg\"],\n  [\"Lover\", \"data/swift/lover.jpg\"],\n  [\"Midnights\", \"data/swift/midnights.jpg\"],\n  [\"Red\", \"data/swift/red.jpg\"],\n  [\"Red (Taylor's Version)\", \"data/swift/red_taylors_version.jpg\"],\n  [\"Reputation\", \"data/swift/reputation.jpg\"],\n  [\"Speak Now\", \"data/swift/speak_now.jpg\"],\n  [\"Speak Now (Taylor's Version)\", \"data/swift/speak_now_taylors_version.jpg\"],\n  [\"Taylor Swift\", \"data/swift/taylor_swift.jpg\"],\n  [\"The Tortured Poets Department\", \"data/swift/the_tortured_poets_department.jpg\"]\n]), {label: \"Select an album:\"})\n\nhtml`&lt;div style=\"margin-top: 20px;\"&gt;&lt;img src=\"${album}\" style=\"max-width: 400px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);\"&gt;&lt;/div&gt;`"
   }
 ]
