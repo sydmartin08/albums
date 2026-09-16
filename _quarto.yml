@@ -9,6 +9,7 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - colors.qmd
       - about.qmd
 
 format:

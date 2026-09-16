@@ -1,26 +1,72 @@
 ---
-title: "Taylor Swift Albums"
+title: "Taylor Swift Album Colors"
 ---
+
+Select an album below to compare its average color palette with all other albums.
 
 ```{ojs}
 //| echo: false
-viewof album = Inputs.select(new Map([
-  ["1989", "data/swift/1989.jpg"],
-  ["1989 (Taylor's Version)", "data/swift/1989_taylors_version.jpg"],
-  ["Evermore", "data/swift/evermore.jpg"],
-  ["Fearless", "data/swift/fearless.jpg"],
-  ["Fearless (Taylor's Version)", "data/swift/fearless_taylors_version.jpg"],
-  ["Folklore", "data/swift/folklore.jpg"],
-  ["Lover", "data/swift/lover.jpg"],
-  ["Midnights", "data/swift/midnights.jpg"],
-  ["Red", "data/swift/red.jpg"],
-  ["Red (Taylor's Version)", "data/swift/red_taylors_version.jpg"],
-  ["Reputation", "data/swift/reputation.jpg"],
-  ["Speak Now", "data/swift/speak_now.jpg"],
-  ["Speak Now (Taylor's Version)", "data/swift/speak_now_taylors_version.jpg"],
-  ["Taylor Swift", "data/swift/taylor_swift.jpg"],
-  ["The Tortured Poets Department", "data/swift/the_tortured_poets_department.jpg"]
-]), {label: "Select an album:"})
+albums = [
+  {id: "1989", title: "1989", r: 0.789, g: 0.743, b: 0.678, file: "data/swift/1989.jpg"},
+  {id: "1989_taylors_version", title: "1989 (Taylor's Version)", r: 0.624, g: 0.629, b: 0.634, file: "data/swift/1989_taylors_version.jpg"},
+  {id: "evermore", title: "Evermore", r: 0.500, g: 0.449, b: 0.423, file: "data/swift/evermore.jpg"},
+  {id: "fearless", title: "Fearless", r: 0.824, g: 0.740, b: 0.611, file: "data/swift/fearless.jpg"},
+  {id: "fearless_taylors_version", title: "Fearless (Taylor's Version)", r: 0.591, g: 0.470, b: 0.300, file: "data/swift/fearless_taylors_version.jpg"},
+  {id: "folklore", title: "Folklore", r: 0.660, g: 0.660, b: 0.660, file: "data/swift/folklore.jpg"},
+  {id: "lover", title: "Lover", r: 0.839, g: 0.742, b: 0.806, file: "data/swift/lover.jpg"},
+  {id: "midnights", title: "Midnights", r: 0.641, g: 0.556, b: 0.557, file: "data/swift/midnights.jpg"},
+  {id: "red", title: "Red", r: 0.396, g: 0.327, b: 0.336, file: "data/swift/red.jpg"},
+  {id: "red_taylors_version", title: "Red (Taylor's Version)", r: 0.442, g: 0.321, b: 0.254, file: "data/swift/red_taylors_version.jpg"},
+  {id: "reputation", title: "Reputation", r: 0.657, g: 0.657, b: 0.657, file: "data/swift/reputation.jpg"},
+  {id: "speak_now", title: "Speak Now", r: 0.749, g: 0.589, b: 0.670, file: "data/swift/speak_now.jpg"},
+  {id: "speak_now_taylors_version", title: "Speak Now (Taylor's Version)", r: 0.316, g: 0.187, b: 0.218, file: "data/swift/speak_now_taylors_version.jpg"},
+  {id: "taylor_swift", title: "Taylor Swift", r: 0.532, g: 0.505, b: 0.414, file: "data/swift/taylor_swift.jpg"},
+  {id: "the_tortured_poets_department", title: "The Tortured Poets Department", r: 0.794, g: 0.781, b: 0.757, file: "data/swift/the_tortured_poets_department.jpg"}
+]
 
-html`<div style="margin-top: 20px;"><img src="${album}" style="max-width: 400px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></div>`
+viewof selectedId = Inputs.select(
+  albums.map(d => d.id),
+  {
+    label: "Choose an album:",
+    format: id => albums.find(d => d.id === id).title,
+    value: "folklore"
+  }
+)
+
+selected = albums.find(d => d.id === selectedId)
+
+// Compute Euclidean distance in RGB color space
+others = albums
+  .filter(d => d.id !== selected.id)
+  .map(d => {
+    const dist = Math.hypot(d.r - selected.r, d.g - selected.g, d.b - selected.b);
+    return { ...d, dist };
+  })
+  .sort((a, b) => a.dist - b.dist)
+
+mostSimilar = others[0]
+mostDifferent = others[others.length - 1]
+
+html`
+<div class="row text-center mt-4">
+  <div class="col-md-4 mb-3">
+    <h5>Selected</h5>
+    <p class="text-muted mb-1"><strong>${selected.title}</strong></p>
+    <img src="${selected.file}" style="width: 100%; max-width: 250px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+  </div>
+  <div class="col-md-4 mb-3">
+    <h5 style="color: #198754;">Most Similar</h5>
+    <p class="text-muted mb-1"><strong>${mostSimilar.title}</strong></p>
+    <img src="${mostSimilar.file}" style="width: 100%; max-width: 250px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+    <p class="small text-muted mt-1">Color distance: ${mostSimilar.dist.toFixed(3)}</p>
+  </div>
+  <div class="col-md-4 mb-3">
+    <h5 style="color: #dc3545;">Most Different</h5>
+    <p class="text-muted mb-1"><strong>${mostDifferent.title}</strong></p>
+    <img src="${mostDifferent.file}" style="width: 100%; max-width: 250px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+    <p class="small text-muted mt-1">Color distance: ${mostDifferent.dist.toFixed(3)}</p>
+  </div>
+</div>
+`
 ```
+

@@ -1,0 +1,36 @@
+---
+title: "Album Colors"
+---
+
+This page calculates the average Red, Green, and Blue (RGB) color values for each Taylor Swift album cover.
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(jpeg)
+
+# Helper function to get average R, G, and B values (0 to 1)
+get_avg_rgb <- \(file) {
+  img <- readJPEG(file)
+  if (length(dim(img)) == 2) {
+    val <- mean(img)
+    tibble(r = val, g = val, b = val)
+  } else {
+    means <- apply(img, 3, mean)
+    tibble(r = means[1], g = means[2], b = means[3])
+  }
+}
+
+# Read images and compute average colors
+album_colors <- tibble(file = list.files("data/swift", full.names = TRUE, pattern = "\\.jpg$")) |>
+  mutate(
+    album = tools::file_path_sans_ext(basename(file)),
+    avg = map(file, get_avg_rgb)
+  ) |>
+  unnest(avg) |>
+  select(album, r, g, b)
+
+album_colors
+```
